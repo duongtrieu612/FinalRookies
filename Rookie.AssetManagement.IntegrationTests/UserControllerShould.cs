@@ -6,9 +6,10 @@ using Microsoft.EntityFrameworkCore;
 using Rookie.AssetManagement.Business;
 using Rookie.AssetManagement.Business.Services;
 using Rookie.AssetManagement.Contracts;
-using Rookie.AssetManagement.Contracts.Dtos;
+using Rookie.AssetManagement.Contracts.Dtos.EnumDtos;
 using Rookie.AssetManagement.Controllers;
 using Rookie.AssetManagement.DataAccessor.Data;
+using Rookie.AssetManagement.DataAccessor.Enum;
 using Rookie.AssetManagement.DataAccessor.Entities;
 using Rookie.AssetManagement.IntegrationTests.Common;
 using Rookie.AssetManagement.IntegrationTests.TestData;
@@ -38,32 +39,32 @@ namespace Rookie.AssetManagement.IntegrationTests
             var config = new MapperConfiguration(cfg => cfg.AddProfile<AutoMapperProfile>());
             _mapper = config.CreateMapper();
 
-            _userService = new userService(_userRepository, _mapper);
-            _userController = new usersController(_userService);
+            _userService = new UserService(_userRepository, _mapper);
+            _userController = new UsersController(_userService);
         }
 
         [Fact]
         public async Task AddUsersAsync_Success()
         {
             //Arrange
-            var newUserId = 7;
-
+            var userRequest = UserArrangeData.GetCreateUserDto();
 
             // Act
-            var result = await _userController.AddAsync();
-
+            var result = await _userController.AddUser(userRequest);
 
             // Assert
             result.Should().NotBeNull();
-            
+
+            var actionResult = Assert.IsType<CreatedResult>(result.Result);
+            var returnValue = Assert.IsType<UserDto>(actionResult.Value);
+
+            Assert.Equal(returnValue.FirstName, userRequest.FirstName);
         }
         [Fact]
         public async Task AddAsyncShouldThrowExceptionAsync()
         {
-            Func<Task> act = async () => await _userController.AddAsync(null);
-            await act.Should().ThrowAsync<ArgumentNullException>();
+            await Assert.ThrowsAsync<ArgumentNullException>(() => _userController.AddUser(null));
         }
 
-        
     }
 }

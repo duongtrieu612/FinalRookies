@@ -8,6 +8,7 @@ using Rookie.AssetManagement.Business.Services;
 using Rookie.AssetManagement.Contracts;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 using Rookie.AssetManagement.Contracts.Dtos.EnumDtos;
 using Rookie.AssetManagement.Controllers;
 using Rookie.AssetManagement.DataAccessor.Data;
@@ -22,6 +23,12 @@ using Rookie.AssetManagement.Contracts.Dtos;
 using Rookie.AssetManagement.Controllers;
 using Rookie.AssetManagement.DataAccessor.Data;
 >>>>>>> 69c2661 (Init intergarion test)
+=======
+using Rookie.AssetManagement.Contracts.Dtos.EnumDtos;
+using Rookie.AssetManagement.Controllers;
+using Rookie.AssetManagement.DataAccessor.Data;
+using Rookie.AssetManagement.DataAccessor.Enum;
+>>>>>>> 621820f (Integration Test)
 using Rookie.AssetManagement.DataAccessor.Entities;
 using Rookie.AssetManagement.IntegrationTests.Common;
 using Rookie.AssetManagement.IntegrationTests.TestData;
@@ -69,6 +76,7 @@ namespace Rookie.AssetManagement.IntegrationTests
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
             _userService = new UserService(_userRepository, _mapper);
             _userController = new UsersController(_userService);
 =======
@@ -79,12 +87,17 @@ namespace Rookie.AssetManagement.IntegrationTests
             _userService = new userService(_userRepository, _mapper);
             _userController = new usersController(_userService);
 >>>>>>> 69c2661 (Init intergarion test)
+=======
+            _userService = new UserService(_userRepository, _mapper);
+            _userController = new UsersController(_userService);
+>>>>>>> 621820f (Integration Test)
         }
 
         [Fact]
         public async Task AddUsersAsync_Success()
         {
             //Arrange
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -108,22 +121,33 @@ namespace Rookie.AssetManagement.IntegrationTests
 >>>>>>> 69c2661 (Init intergarion test)
             var newUserId = 7;
 
+=======
+            var userRequest = UserArrangeData.GetCreateUserDto();
+>>>>>>> 621820f (Integration Test)
 
             // Act
-            var result = await _userController.AddAsync();
-
+            var result = await _userController.AddUser(userRequest);
 
             // Assert
             result.Should().NotBeNull();
+<<<<<<< HEAD
             
 <<<<<<< HEAD
 >>>>>>> b5be597 (Init intergarion test)
 =======
 >>>>>>> 69c2661 (Init intergarion test)
+=======
+
+            var actionResult = Assert.IsType<CreatedResult>(result.Result);
+            var returnValue = Assert.IsType<UserDto>(actionResult.Value);
+
+            Assert.Equal(returnValue.FirstName, userRequest.FirstName);
+>>>>>>> 621820f (Integration Test)
         }
         [Fact]
         public async Task AddAsyncShouldThrowExceptionAsync()
         {
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
             await Assert.ThrowsAsync<ArgumentNullException>(() => _userController.AddUser(null));
@@ -141,5 +165,10 @@ namespace Rookie.AssetManagement.IntegrationTests
 >>>>>>> b5be597 (Init intergarion test)
 =======
 >>>>>>> 69c2661 (Init intergarion test)
+=======
+            await Assert.ThrowsAsync<ArgumentNullException>(() => _userController.AddUser(null));
+        }
+
+>>>>>>> 621820f (Integration Test)
     }
 }

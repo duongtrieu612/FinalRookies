@@ -7,6 +7,7 @@ using Rookie.AssetManagement.Business;
 using Rookie.AssetManagement.Business.Services;
 using Rookie.AssetManagement.Contracts;
 <<<<<<< HEAD
+<<<<<<< HEAD
 using Rookie.AssetManagement.Contracts.Dtos.EnumDtos;
 using Rookie.AssetManagement.Controllers;
 using Rookie.AssetManagement.DataAccessor.Data;
@@ -16,6 +17,11 @@ using Rookie.AssetManagement.Contracts.Dtos;
 using Rookie.AssetManagement.Controllers;
 using Rookie.AssetManagement.DataAccessor.Data;
 >>>>>>> b5be597 (Init intergarion test)
+=======
+using Rookie.AssetManagement.Contracts.Dtos;
+using Rookie.AssetManagement.Controllers;
+using Rookie.AssetManagement.DataAccessor.Data;
+>>>>>>> 69c2661 (Init intergarion test)
 using Rookie.AssetManagement.DataAccessor.Entities;
 using Rookie.AssetManagement.IntegrationTests.Common;
 using Rookie.AssetManagement.IntegrationTests.TestData;
@@ -30,10 +36,14 @@ using System.Collections.Generic;
 namespace Rookie.AssetManagement.IntegrationTests
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
     public class UserControllerShould : IClassFixture<SqliteInMemoryFixture>
 =======
     public class AssetControllerShould : IClassFixture<SqliteInMemoryFixture>
 >>>>>>> b5be597 (Init intergarion test)
+=======
+    public class AssetControllerShould : IClassFixture<SqliteInMemoryFixture>
+>>>>>>> 69c2661 (Init intergarion test)
     {
         private readonly ApplicationDbContext _dbContext;
         private readonly BaseRepository<User> _userRepository;
@@ -42,10 +52,14 @@ namespace Rookie.AssetManagement.IntegrationTests
         private readonly UsersController _userController;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         public UserControllerShould(SqliteInMemoryFixture fixture)
 =======
         public AssetControllerShould(SqliteInMemoryFixture fixture)
 >>>>>>> b5be597 (Init intergarion test)
+=======
+        public AssetControllerShould(SqliteInMemoryFixture fixture)
+>>>>>>> 69c2661 (Init intergarion test)
         {
             fixture.CreateDatabase();
             _dbContext = fixture.Context;
@@ -54,18 +68,24 @@ namespace Rookie.AssetManagement.IntegrationTests
             _mapper = config.CreateMapper();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
             _userService = new UserService(_userRepository, _mapper);
             _userController = new UsersController(_userService);
 =======
             _userService = new userService(_userRepository, _mapper);
             _userController = new usersController(_userService);
 >>>>>>> b5be597 (Init intergarion test)
+=======
+            _userService = new userService(_userRepository, _mapper);
+            _userController = new usersController(_userService);
+>>>>>>> 69c2661 (Init intergarion test)
         }
 
         [Fact]
         public async Task AddUsersAsync_Success()
         {
             //Arrange
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
             var userRequest = ArrangeData.GetCreateUserDto();
@@ -84,6 +104,8 @@ namespace Rookie.AssetManagement.IntegrationTests
 
             Assert.Equal(returnValue.FirstName, userRequest.FirstName);
 =======
+=======
+>>>>>>> 69c2661 (Init intergarion test)
             var newUserId = 7;
 
 
@@ -94,21 +116,30 @@ namespace Rookie.AssetManagement.IntegrationTests
             // Assert
             result.Should().NotBeNull();
             
+<<<<<<< HEAD
 >>>>>>> b5be597 (Init intergarion test)
+=======
+>>>>>>> 69c2661 (Init intergarion test)
         }
         [Fact]
         public async Task AddAsyncShouldThrowExceptionAsync()
         {
 <<<<<<< HEAD
+<<<<<<< HEAD
             await Assert.ThrowsAsync<ArgumentNullException>(() => _userController.AddUser(null));
         }
 
 =======
+=======
+>>>>>>> 69c2661 (Init intergarion test)
             Func<Task> act = async () => await _userController.AddAsync(null);
             await act.Should().ThrowAsync<ArgumentNullException>();
         }
 
         
+<<<<<<< HEAD
 >>>>>>> b5be597 (Init intergarion test)
+=======
+>>>>>>> 69c2661 (Init intergarion test)
     }
 }

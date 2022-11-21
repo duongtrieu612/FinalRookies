@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Rookie.AssetManagement.DataAccessor.Data;
 <<<<<<< HEAD
+<<<<<<< HEAD
 using Rookie.AssetManagement.DataAccessor.Enum;
 =======
 >>>>>>> b5be597 (Init intergarion test)
+=======
+>>>>>>> 69c2661 (Init intergarion test)
 using Rookie.AssetManagement.DataAccessor.Entities;
 using Rookie.AssetManagement.Contracts.Dtos.UserDtos;
 <<<<<<< HEAD
@@ -28,6 +31,7 @@ namespace Rookie.AssetManagement.IntegrationTests.TestData
             {
                 new User()
                 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
                     FirstName = "An",
@@ -128,6 +132,8 @@ namespace Rookie.AssetManagement.IntegrationTests.TestData
 
         public static void InitUsersData(ApplicationDbContext dbContext, UserManager<User> userManager)
 =======
+=======
+>>>>>>> 69c2661 (Init intergarion test)
                     FirstName = "First Name 1",
                     LastName = "Last Name 1",
                     DateOfBirth = "",
@@ -184,11 +190,15 @@ namespace Rookie.AssetManagement.IntegrationTests.TestData
         }
 
         public static void InitUsersData(ApplicationDbContext dbContext)
+<<<<<<< HEAD
 >>>>>>> b5be597 (Init intergarion test)
+=======
+>>>>>>> 69c2661 (Init intergarion test)
         {
             var users = GetSeedUsersData();
             dbContext.Users.AddRange(users);
             dbContext.SaveChanges();
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 
@@ -198,6 +208,8 @@ namespace Rookie.AssetManagement.IntegrationTests.TestData
         }
 
 =======
+=======
+>>>>>>> 69c2661 (Init intergarion test)
         }
 
         public static UserQueryCriteriaDto GetUserQueryCriteriaDto()
@@ -208,6 +220,9 @@ namespace Rookie.AssetManagement.IntegrationTests.TestData
                 Page = 1
             };
         }
+<<<<<<< HEAD
 >>>>>>> b5be597 (Init intergarion test)
+=======
+>>>>>>> 69c2661 (Init intergarion test)
     }
 }

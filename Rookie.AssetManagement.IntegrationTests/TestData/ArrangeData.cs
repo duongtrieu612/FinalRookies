@@ -2,7 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Rookie.AssetManagement.DataAccessor.Data;
+<<<<<<< HEAD
 using Rookie.AssetManagement.DataAccessor.Enum;
+=======
+>>>>>>> b5be597 (Init intergarion test)
 using Rookie.AssetManagement.DataAccessor.Entities;
 using Rookie.AssetManagement.Contracts.Dtos.UserDtos;
 <<<<<<< HEAD
@@ -17,7 +20,7 @@ using Rookie.AssetManagement.Contracts.Dtos.EnumDtos;
 
 namespace Rookie.AssetManagement.IntegrationTests.TestData
 {
-    public static class ArrangeData
+    public static class UserArrangeData
     {
         public static List<User> GetSeedUsersData()
         {
@@ -25,6 +28,7 @@ namespace Rookie.AssetManagement.IntegrationTests.TestData
             {
                 new User()
                 {
+<<<<<<< HEAD
 <<<<<<< HEAD
                     FirstName = "An",
                     LastName = "Ngo Vo",
@@ -123,10 +127,69 @@ namespace Rookie.AssetManagement.IntegrationTests.TestData
 
 
         public static void InitUsersData(ApplicationDbContext dbContext, UserManager<User> userManager)
+=======
+                    FirstName = "First Name 1",
+                    LastName = "Last Name 1",
+                    DateOfBirth = "",
+                    Gender = "",
+                    JoinedDate = "",
+                    Type = ""
+                },
+                new User()
+                {
+                    FirstName = "First Name 2",
+                    LastName = "Last Name 2",
+                    DateOfBirth = "",
+                    Gender = "",
+                    JoinedDate = "",
+                    Type = ""
+                },
+                new User()
+                {
+                    FirstName = "First Name 3",
+                    LastName = "Last Name 3",
+                    DateOfBirth = "",
+                    Gender = "",
+                    JoinedDate = "",
+                    Type = ""
+                },
+                new User()
+                {
+                    FirstName = "First Name 4",
+                    LastName = "Last Name 4",
+                    DateOfBirth = "",
+                    Gender = "",
+                    JoinedDate = "",
+                    Type = ""
+                },
+                new User()
+                {
+                    FirstName = "First Name 5",
+                    LastName = "Last Name 5",
+                    DateOfBirth = "",
+                    Gender = "",
+                    JoinedDate = "",
+                    Type = ""
+                },
+                new User()
+                {
+                    FirstName = "First Name 6",
+                    LastName = "Last Name 6",
+                    DateOfBirth = "",
+                    Gender = "",
+                    JoinedDate = "",
+                    Type = ""
+                }
+            };
+        }
+
+        public static void InitUsersData(ApplicationDbContext dbContext)
+>>>>>>> b5be597 (Init intergarion test)
         {
             var users = GetSeedUsersData();
             dbContext.Users.AddRange(users);
             dbContext.SaveChanges();
+<<<<<<< HEAD
 
 
             //fix
@@ -134,5 +197,17 @@ namespace Rookie.AssetManagement.IntegrationTests.TestData
 
         }
 
+=======
+        }
+
+        public static UserQueryCriteriaDto GetUserQueryCriteriaDto()
+        {
+            return new UserQueryCriteriaDto()
+            {
+                Limit = 5,
+                Page = 1
+            };
+        }
+>>>>>>> b5be597 (Init intergarion test)
     }
 }

@@ -44,6 +44,7 @@ namespace Rookie.AssetManagement.IntegrationTests
 {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     public class UserControllerShould : IClassFixture<SqliteInMemoryFixture>
 =======
     public class AssetControllerShould : IClassFixture<SqliteInMemoryFixture>
@@ -51,6 +52,9 @@ namespace Rookie.AssetManagement.IntegrationTests
 =======
     public class AssetControllerShould : IClassFixture<SqliteInMemoryFixture>
 >>>>>>> 69c2661 (Init intergarion test)
+=======
+    public class UserControllerShould : IClassFixture<SqliteInMemoryFixture>
+>>>>>>> 40ce46f (Integration Test)
     {
         private readonly ApplicationDbContext _dbContext;
         private readonly BaseRepository<User> _userRepository;
@@ -60,6 +64,7 @@ namespace Rookie.AssetManagement.IntegrationTests
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         public UserControllerShould(SqliteInMemoryFixture fixture)
 =======
         public AssetControllerShould(SqliteInMemoryFixture fixture)
@@ -67,6 +72,9 @@ namespace Rookie.AssetManagement.IntegrationTests
 =======
         public AssetControllerShould(SqliteInMemoryFixture fixture)
 >>>>>>> 69c2661 (Init intergarion test)
+=======
+        public UserControllerShould(SqliteInMemoryFixture fixture)
+>>>>>>> 40ce46f (Integration Test)
         {
             fixture.CreateDatabase();
             _dbContext = fixture.Context;

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Rookie.AssetManagement.DataAccessor.Data;
 
@@ -11,9 +12,10 @@ using Rookie.AssetManagement.DataAccessor.Data;
 namespace Rookie.AssetManagement.DataAccessor.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221121083359_IsNewUser")]
+    partial class IsNewUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -228,7 +230,9 @@ namespace Rookie.AssetManagement.DataAccessor.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("StaffCode")
-                        .HasColumnType("nvarchar(max)");
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("nvarchar(max)")
+                        .HasComputedColumnSql("'SD' + format([Id], 'd4')");
 
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");

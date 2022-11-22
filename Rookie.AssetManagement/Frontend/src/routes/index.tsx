@@ -1,12 +1,13 @@
 import React, { lazy, Suspense, useEffect } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useNavigate } from "react-router-dom";
 
-import { HOME, USER } from "../constants/pages";
+import { HOME, LOGIN, USER, USER_LIST_LINK } from "../constants/pages";
 import InLineLoader from "../components/InlineLoader";
 import { useAppDispatch, useAppSelector } from "../hooks/redux";
 import LayoutRoute from "./LayoutRoute";
 import Roles from "src/constants/roles";
 import { me } from "src/containers/Authorize/reducer";
+import PrivateRoute from "./PrivateRoute";
 
 const Home = lazy(() => import("../containers/Home"));
 const Login = lazy(() => import("../containers/Authorize"));
@@ -18,11 +19,6 @@ const SusspenseLoading = ({ children }) => (
 );
 
 const AppRoutes = () => {
-  const { isAuth, account } = useAppSelector((state) => state.authReducer);
-  const dispatch = useAppDispatch();
-
-  useEffect(() => {}, []);
-
   return (
     <SusspenseLoading>
       <Routes>
@@ -37,9 +33,23 @@ const AppRoutes = () => {
         <Route
           path={USER}
           element={
-            <LayoutRoute>
+            <PrivateRoute>
               <User />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path={LOGIN}
+          element={
+            <LayoutRoute showSideBar={false}>
+              <Login />
             </LayoutRoute>
+          }
+        />
+        <Route
+          path={"/*"}
+          element={
+            <NotFound />
           }
         />
       </Routes>

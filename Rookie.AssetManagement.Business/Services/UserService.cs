@@ -22,7 +22,7 @@ namespace Rookie.AssetManagement.Business.Services
         private readonly UserManager<User> userManager;
         private readonly IMapper _mapper;
 
-        public UserService(IBaseRepository<User> userRepository,UserManager<User> userManager, IMapper mapper)
+        public UserService(IBaseRepository<User> userRepository, UserManager<User> userManager, IMapper mapper)
         {
             _userRepository = userRepository;
             this.userManager = userManager;
@@ -47,7 +47,7 @@ namespace Rookie.AssetManagement.Business.Services
                 newUser.UserName = username;
             }
             else
-            {                
+            {
                 newUser.UserName = username + (countUsername).ToString();
             }
             //default password

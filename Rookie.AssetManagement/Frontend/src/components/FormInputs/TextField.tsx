@@ -10,7 +10,7 @@ type InputFieldProps = InputHTMLAttributes<HTMLInputElement> & {
 };
 
 const TextField: React.FC<InputFieldProps> = (props) => {
-    const [field, { error, touched }, meta] = useField(props);
+    const [field, { error, touched }] = useField(props);
     const { label, isrequired, notvalidate } = props;
 
     const validateClass = () => {
@@ -27,7 +27,7 @@ const TextField: React.FC<InputFieldProps> = (props) => {
                 <label className="col-4 col-form-label d-flex">
                     {label}
                     {isrequired && (
-                        <div className="invalid ml-1">(*)</div>
+                        <div className="invalid ml-1"></div>
                     )}
                 </label>
                 <div className="col">

@@ -25,8 +25,15 @@ using Rookie.AssetManagement.Contracts.Dtos.EnumDtos;
 using Rookie.AssetManagement.DataAccessor.Enum;
 using Rookie.AssetManagement.DataAccessor.Entities;
 using Rookie.AssetManagement.Contracts.Dtos.UserDtos;
+using Microsoft.AspNetCore.Identity;
 using Rookie.AssetManagement.Contracts.Dtos.EnumDtos;
+<<<<<<< HEAD
 >>>>>>> 621820f (Integration Test)
+=======
+using Rookie.AssetManagement.Contracts.Dtos.AuthDtos;
+using System.Linq;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+>>>>>>> 8067acc (login false test)
 
 namespace Rookie.AssetManagement.IntegrationTests.TestData
 {
@@ -185,17 +192,45 @@ namespace Rookie.AssetManagement.IntegrationTests.TestData
             };
         }
 
+<<<<<<< HEAD
         public static void InitUsersData(ApplicationDbContext dbContext)
 <<<<<<< HEAD
 >>>>>>> b5be597 (Init intergarion test)
 =======
 >>>>>>> 69c2661 (Init intergarion test)
+=======
+        public static User Create()
+        {
+            return new User
+            {
+                UserName = "adminhcm"
+            };
+
+        }
+
+        public static LoginDto GetLogin()
+        {
+            return new LoginDto() {
+
+                UserName = "adminhcm",
+                Password = "123456"
+
+            };
+        }
+
+
+
+        public static void InitUsersData(ApplicationDbContext dbContext, UserManager<User> userManager)
+>>>>>>> 8067acc (login false test)
         {
             var users = GetSeedUsersData();
             dbContext.Users.AddRange(users);
             dbContext.SaveChanges();
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 8067acc (login false test)
 
 
             //fix

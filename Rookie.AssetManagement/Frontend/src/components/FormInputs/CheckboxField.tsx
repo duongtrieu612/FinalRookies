@@ -25,6 +25,7 @@ const CheckboxField: React.FC<InputFieldProps> = (props) => {
 
         return '';
     };
+
     return (
         <>
             <div className="mb-3 row">

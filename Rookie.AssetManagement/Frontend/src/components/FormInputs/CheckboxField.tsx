@@ -20,17 +20,11 @@ const CheckboxField: React.FC<InputFieldProps> = (props) => {
     const handleChange = (e) => {
         setValue(e.target.value)
     };
-<<<<<<< HEAD
-
     const display = () => {
         if (checked) return 'form-check-inline';
 
         return '';
     };
-
-=======
-    
->>>>>>> 6876da0 (Create asset form and validate)
     return (
         <>
             <div className="mb-3 row">

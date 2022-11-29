@@ -1,5 +1,9 @@
 import React, { useEffect, useMemo, useState } from 'react';
+<<<<<<< HEAD
 import { Formik, Form } from 'formik';
+=======
+import { Formik, Form, Field } from 'formik';
+>>>>>>> b45246b (2update user)
 import * as Yup from 'yup';
 import { Link, useNavigate } from 'react-router-dom';
 import TextField from 'src/components/FormInputs/TextField';
@@ -119,8 +123,12 @@ function AssetFormContainer({ initialUserForm = {
                             label="State"
                             isrequired
                             options={states}
+<<<<<<< HEAD
                             disabled={isUpdate ? true : false}
                             checked = {false} />
+=======
+                            disabled={isUpdate ? true : false} />
+>>>>>>> b45246b (2update user)
 
                         <div className="d-flex">
                             <div className="ml-auto">

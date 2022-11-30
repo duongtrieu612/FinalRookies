@@ -146,18 +146,6 @@ namespace Rookie.AssetManagement.IntegrationTests
             var assetRequestId = 1
                 ;
 
-            // Act
-            var result = await _assetController.DisableAssetAsync(assetRequestId);
-
-            // Assert
-            result.Should().Equals(true);
-
-        }
-        [Fact]
-        public async Task DisableAsyncShouldThrowExceptionAsync()
-        {
-            await Assert.ThrowsAsync<NotFoundException>(() => _assetController.DisableAssetAsync(4));
-        }
         [Fact]
         public async Task UpdateAssetAsync_Success()
         {

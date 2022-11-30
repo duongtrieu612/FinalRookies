@@ -181,5 +181,17 @@ namespace Rookie.AssetManagement.IntegrationTests.TestData
             dbContext.SaveChanges();
 
         }
+
+        public static AssetUpdateDto GetAssetUpdateDto()
+        {
+            return new AssetUpdateDto()
+            {
+                Id = 3,
+                AssetName = "Laptop Dell",
+                Specification = "Laptop Dell",
+                InstalledDate = new DateTime(2022, 11, 10, 0, 0, 0),
+                State = 3,
+            };
+        }
     }
 }

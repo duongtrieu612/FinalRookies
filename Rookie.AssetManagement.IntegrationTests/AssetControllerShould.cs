@@ -158,6 +158,33 @@ namespace Rookie.AssetManagement.IntegrationTests
         {
             await Assert.ThrowsAsync<NotFoundException>(() => _assetController.DisableAssetAsync(4));
         }
+        [Fact]
+        public async Task UpdateAssetAsync_Success()
+        {
+            //Arrange
+            var assetRequest = AssetData.GetAssetUpdateDto();
 
+            // Act
+            var result = await _assetController.UpdateAssetAsync(assetRequest);
+
+            // Assert
+            result.Should().NotBeNull();
+
+            var actionResult = Assert.IsType<CreatedResult>(result.Result);
+            var returnValue = Assert.IsType<AssetDto>(actionResult.Value);
+
+            Assert.Equal(3, returnValue.Id);
+            Assert.Equal("Available", returnValue.State);
+        }
+
+        [Fact]
+        public async Task UpdateAsyncShouldThrowNotFoundExceptionAsync()
+        {
+            var unExistedId = 5;
+            var assetRequest = AssetData.GetAssetUpdateDto();
+            assetRequest.Id = unExistedId;
+
+            await Assert.ThrowsAsync<NotFoundException>(() => _assetController.UpdateAssetAsync(assetRequest));
+        }
     }
 }

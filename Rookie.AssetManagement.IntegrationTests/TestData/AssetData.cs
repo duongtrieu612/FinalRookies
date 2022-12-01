@@ -183,7 +183,7 @@ namespace Rookie.AssetManagement.IntegrationTests.TestData
         {
             return new AssetUpdateDto()
             {
-                Id = 3,
+                Id = 1,
                 AssetName = "Laptop Dell",
                 Specification = "Laptop Dell",
                 InstalledDate = new DateTime(2022, 11, 10, 0, 0, 0),

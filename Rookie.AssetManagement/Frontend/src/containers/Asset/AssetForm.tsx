@@ -10,6 +10,7 @@ import { useAppDispatch, useAppSelector } from 'src/hooks/redux';
 import { ASSET, ASSET_PARENT_ROOT, HOME, USER, USER_PARENT_ROOT } from 'src/constants/pages';
 import IAssetForm from 'src/interfaces/Asset/IAssetForm';
 import { createAsset, getCategory, getState, updateAsset } from './reducer';
+import DropDownSelectFeild from 'src/components/FormInputs/DropDownSelectFeild';
 
 
 const initialFormValues: IAssetForm = {
@@ -95,7 +96,15 @@ function AssetFormContainer({ initialAssetForm = {
                             isrequired
                         />
 
-                        <SelectField
+                        {/* <SelectField
+                            name="category"
+                            label="Category"
+                            options={categories}
+                            isrequired
+                            disabled={isUpdate ? true : false}
+                        /> */}
+
+                        <DropDownSelectFeild
                             name="category"
                             label="Category"
                             options={categories}

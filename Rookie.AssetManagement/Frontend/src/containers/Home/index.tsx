@@ -12,17 +12,20 @@ import {
 } from "src/constants/paging";
 import MyAssignmentTable from "./MyAssignmentTable";
 import IQueryMyAssignmentModel from "src/interfaces/Assignment/IQueryMyAssignmentModel";
-import { acceptAssignment, cleanUpActionResult, getMyAssignmentList } from "./reducer";
+import { acceptAssignment, cleanUpActionResult, declineAssignment, getMyAssignmentList } from "./reducer";
+
+const defaultQuery = {
+  page: 1,
+  sortOrder: DECSENDING,
+  limit: 5,
+  sortColumn: DEFAULT_USER_SORT_COLUMN_NAME,
+} as IQueryMyAssignmentModel
 
 const Home = () => {
   const { assignments, actionResult } = useAppSelector((state) => state.myAssignmentReducer);
   const dispatch = useAppDispatch();
 
-  const [query, setQuery] = useState({
-    page: assignments?.currentPage ?? 1,
-    sortOrder: DECSENDING,
-    sortColumn: DEFAULT_USER_SORT_COLUMN_NAME,
-  } as IQueryMyAssignmentModel);
+  const [query, setQuery] = useState({ ...defaultQuery });
 
   const handlePage = (page: number) => {
     setQuery({
@@ -33,8 +36,26 @@ const Home = () => {
   };
 
   const handleAccept = (id: number) => {
-    dispatch(acceptAssignment(id));
-    fetchData();
+    dispatch(acceptAssignment({
+      id: id,
+      handleResult: () => {
+        dispatch(getMyAssignmentList({ ...defaultQuery }))
+      }
+    }));
+  }
+
+  const handleDecline = (id: number) => {
+    dispatch(declineAssignment({
+      id: id,
+      handleResult: () => {
+        dispatch(getMyAssignmentList({ ...defaultQuery }))
+      }
+    }));
+  }
+
+  const handleReturn = (id: number) =>{
+    // dispatch(declineAssignment(id));
+    // fetchData();
   }
 
   const handleSort = (sortColumn: string) => {
@@ -51,13 +72,9 @@ const Home = () => {
     });
   };
 
-  const fetchData = () => {
-    dispatch(getMyAssignmentList({ ...query }))
-  };
-
   useEffect(() => {
     dispatch(cleanUpActionResult())
-    fetchData()
+    dispatch(getMyAssignmentList({ ...query }))
   }, [query]);
 
   return (
@@ -75,7 +92,10 @@ const Home = () => {
           }}
           assignments={assignments}
           result={actionResult}
-          handleAccept={handleAccept} />
+          handleAccept={handleAccept}
+          handleDecline={handleDecline}
+          handleReturn={handleReturn}
+          />
       </div>
     </>
   );

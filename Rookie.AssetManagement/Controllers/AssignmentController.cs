@@ -15,7 +15,6 @@ using Rookie.AssetManagement.Contracts.Dtos.StateDtos;
 
 namespace Rookie.AssetManagement.Controllers
 {
-    [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class AssignmentController : ControllerBase
@@ -27,17 +26,20 @@ namespace Rookie.AssetManagement.Controllers
             _stateService = stateService;
             _assignmentService = assignmentService;
         }
+
+        [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin")]
         [HttpGet]
         public async Task<ActionResult<AssignmentDto>> GetAllAssignment()
         {
             return Ok(await _assignmentService.GetAllAsync());
         }
 
+        [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin")]
         [HttpGet]
         [Route("Assignment")]
         public async Task<ActionResult<PagedResponseModel<AssignmentDto>>> GetAssignment(
-        [FromQuery] AssignmentQueryCriteriaDto assignmentCriteriaDto,
-        CancellationToken cancellationToken)
+               [FromQuery] AssignmentQueryCriteriaDto assignmentCriteriaDto,
+               CancellationToken cancellationToken)
         {
 
 
@@ -49,6 +51,7 @@ namespace Rookie.AssetManagement.Controllers
             return Ok(assetResponses);
         }
 
+        [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin")]
         [HttpGet]
         [Route("GetAssignment/{id}")]
         public async Task<ActionResult<AssignmentDto>> GetAssginmentById(int id)
@@ -57,6 +60,7 @@ namespace Rookie.AssetManagement.Controllers
             return Ok(assignmentResponses);
         }
 
+        [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin")]
         [HttpGet]
         [Route("GetAssignmentDataForm/{id}")]
         public async Task<ActionResult<AssignmentFormDto>> GetAssginmentDataById(int id)
@@ -65,12 +69,15 @@ namespace Rookie.AssetManagement.Controllers
             return Ok(assignmentResponses);
         }
 
+        [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin")]
         [HttpGet]
         [Route("GetAssignmentState")]
         public async Task<ActionResult<StateDto>> GetAssignmentState()
         {
             return Ok(await _stateService.GetAssignmentStateAsync());
         }
+
+        [Authorize(AuthenticationSchemes = "Bearer")]
         [HttpGet]
         [Route("my")]
         public async Task<ActionResult<PagedResponseModel<MyAssignmentDto>>> GetAssignmentByUserName(
@@ -86,6 +93,7 @@ namespace Rookie.AssetManagement.Controllers
             return Ok(assetResponses);
         }
 
+        [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin")]
         [HttpPost]
         public async Task<ActionResult<AssignmentDto>> AddAssignmentAsync([FromBody] AssignmentCreateDto assignmentCreate)
         {
@@ -93,6 +101,8 @@ namespace Rookie.AssetManagement.Controllers
             var assigment = await _assignmentService.AddAssignmentAsync(assignmentCreate, userName);
             return Created(Endpoints.User, assigment);
         }
+
+        [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin")]
         [HttpPut]
         public async Task<ActionResult<AssignmentDto>> UpdateAssignmentAsync([FromBody] AssignmentUpdateDto assignmentUpdateDto)
         {
@@ -101,6 +111,7 @@ namespace Rookie.AssetManagement.Controllers
             return Created(Endpoints.User, assignment);
         }
 
+        [Authorize(AuthenticationSchemes = "Bearer")]
         [HttpPatch("accept/{id}")]
         public async Task<ActionResult> AcceptAssignmentAsync([FromRoute] int id)
         {
@@ -111,6 +122,18 @@ namespace Rookie.AssetManagement.Controllers
             return Ok(disableResult);
         }
 
+        [Authorize(AuthenticationSchemes = "Bearer")]
+        [HttpPatch("decline/{id}")]
+        public async Task<ActionResult> DeclineAssignmentAsync([FromRoute] int id)
+        {
+            var userName = User.Claims.FirstOrDefault(x => x.Type.Equals("UserName", StringComparison.OrdinalIgnoreCase))?.Value;
+
+            var disableResult = await _assignmentService.DeclineAssignmentAsync(userName, id);
+
+            return Ok(disableResult);
+        }
+
+        [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin")]
         [HttpDelete("{id}")]
         public async Task<ActionResult> DisableAssignmentAsync([FromRoute] int id)
         {

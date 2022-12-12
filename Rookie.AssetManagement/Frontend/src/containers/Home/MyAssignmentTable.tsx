@@ -26,7 +26,9 @@ type Props = {
     handlePage: (page: number) => void;
     handleSort: (colValue: string) => void;
     sortState: SortType;
-    handleAccept: Function
+    handleAccept: Function;
+    handleDecline: Function;
+    handleReturn: Function;
 };
 
 const MyAssignmentTable: React.FC<Props> = ({
@@ -35,7 +37,9 @@ const MyAssignmentTable: React.FC<Props> = ({
     handlePage,
     handleSort,
     sortState,
-    handleAccept = () => { }
+    handleAccept = () => { },
+    handleDecline = () => { },
+    handleReturn = () => { },
 }) => {
     const dispatch = useAppDispatch();
     const [showDetail, setShowDetail] = useState(false);
@@ -45,6 +49,8 @@ const MyAssignmentTable: React.FC<Props> = ({
         title: '',
         message: '',
         isDisable: true,
+        button: "",
+        cancleButton: "",
         callback: () => { }
     });
 
@@ -98,15 +104,37 @@ const MyAssignmentTable: React.FC<Props> = ({
                                     title: 'Are you sure?',
                                     message: 'Do you want to accept this assignment?',
                                     isDisable: true,
+                                    button: "Accept",
+                                    cancleButton: "Cancel",
                                     callback: () => { handleAccept(data.id) }
                                 });
                             }}>
                                 <CheckLg className="text-danger" />
                             </ButtonIcon>
-                            <ButtonIcon disable={data.state == "Accepted"}>
-                                <XLg className="text-danger mx-2" />
+                            <ButtonIcon disable={data.state == "Accepted"} onClick={() => {
+                                setConfirmState({
+                                    isOpen: true,
+                                    title: 'Are you sure?',
+                                    message: 'Do you want to decline this assignment?',
+                                    isDisable: true,
+                                    button: "Decline",
+                                    cancleButton: "Cancel",
+                                    callback: () => { handleDecline(data.id) }
+                                });
+                            }}>
+                                <XLg className="text-danger mx-2" fill="" />
                             </ButtonIcon>
-                            <ButtonIcon disable={data.state == "Waiting for acceptance"}>
+                            <ButtonIcon disable={data.state != "Accepted"} onClick={() => {
+                                setConfirmState({
+                                    isOpen: true,
+                                    title: 'Are you sure?',
+                                    message: 'Do you want to create a returning request for this asset?',
+                                    isDisable: true,
+                                    button: "Yes",
+                                    cancleButton: "No",
+                                    callback: () => { handleReturn(data.id) }
+                                });
+                            }}>
                                 <ArrowCounterclockwise className="text-primary " />
                             </ButtonIcon>
                         </td>
@@ -119,6 +147,17 @@ const MyAssignmentTable: React.FC<Props> = ({
             <ConfirmModal
                 title={confirmState.title}
                 isShow={confirmState.isOpen}
+                onHide={() => {
+                    setConfirmState({
+                        isOpen: false,
+                        title: '',
+                        message: '',
+                        button: "",
+                        cancleButton: "",
+                        isDisable: true,
+                        callback: () => { }
+                    })
+                }}
             >
                 <div>
 
@@ -131,18 +170,20 @@ const MyAssignmentTable: React.FC<Props> = ({
                                 <button
                                     className="btn btn-danger mr-3"
                                     type="button"
-                                    onClick={() => { 
+                                    onClick={() => {
                                         setConfirmState({
                                             isOpen: false,
                                             title: '',
                                             message: '',
                                             isDisable: true,
+                                            button: "",
+                                            cancleButton: "",
                                             callback: () => { }
                                         })
-                                        confirmState.callback() 
+                                        confirmState.callback()
                                     }}
                                 >
-                                    Accept
+                                    {confirmState.button}
                                 </button>
 
                                 <button
@@ -153,12 +194,14 @@ const MyAssignmentTable: React.FC<Props> = ({
                                             isOpen: false,
                                             title: '',
                                             message: '',
+                                            button: '',
+                                            cancleButton: "",
                                             isDisable: true,
                                             callback: () => { }
                                         })
                                     }}
                                 >
-                                    Cancel
+                                    {confirmState.cancleButton}
                                 </button>
                             </div>
                         )

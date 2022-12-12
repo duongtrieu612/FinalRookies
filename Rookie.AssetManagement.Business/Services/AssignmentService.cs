@@ -170,16 +170,19 @@ namespace Rookie.AssetManagement.Business.Services
                         assignmentQuery = assignmentQueryCriteria.SortOrder == 0 ? assignmentQuery.OrderBy(x => x.Asset.AssetName) : assignmentQuery.OrderByDescending(x => x.Asset.AssetName);
                         break;
                     case "ASSIGNEDTO":
-                        assignmentQuery = assignmentQueryCriteria.SortOrder == 0 ? assignmentQuery.OrderBy(x => x.AssignedTo) : assignmentQuery.OrderByDescending(x => x.AssignedTo);
+                        assignmentQuery = assignmentQueryCriteria.SortOrder == 0 ? assignmentQuery.OrderBy(x => x.AssignedTo.UserName) : assignmentQuery.OrderByDescending(x => x.AssignedTo.UserName);
                         break;
                     case "ASSIGNEDBY":
-                        assignmentQuery = assignmentQueryCriteria.SortOrder == 0 ? assignmentQuery.OrderBy(x => x.AssignedBy) : assignmentQuery.OrderByDescending(x => x.AssignedBy);
+                        assignmentQuery = assignmentQueryCriteria.SortOrder == 0 ? assignmentQuery.OrderBy(x => x.AssignedBy.UserName) : assignmentQuery.OrderByDescending(x => x.AssignedBy.UserName);
                         break;
                     case "ASSIGNEDDATE":
                         assignmentQuery = assignmentQueryCriteria.SortOrder == 0 ? assignmentQuery.OrderBy(x => x.AssignedDate) : assignmentQuery.OrderByDescending(x => x.AssignedDate);
                         break;
                     case "STATE":
                         assignmentQuery = assignmentQueryCriteria.SortOrder == 0 ? assignmentQuery.OrderBy(x => x.State) : assignmentQuery.OrderByDescending(x => x.State);
+                        break;
+                    case "CATEGORY":
+                        assignmentQuery = assignmentQueryCriteria.SortOrder == 0 ? assignmentQuery.OrderBy(x => x.Asset.Category.CategoryName) : assignmentQuery.OrderByDescending(x => x.Asset.Category.CategoryName);
                         break;
                     default:
                         assignmentQuery = assignmentQuery.OrderBy(x => x.Id);
@@ -197,7 +200,7 @@ namespace Rookie.AssetManagement.Business.Services
                 .ProjectTo<AssignmentDto>(_mapper.ConfigurationProvider)
                 .FirstAsync();
             return assignment;
-        } 
+        }
 
         public async Task<AssignmentFormDto> GetFormDataById(int id)
         {
@@ -207,7 +210,7 @@ namespace Rookie.AssetManagement.Business.Services
                 .FirstAsync();
             return assignment;
         }
-        
+
         public async Task<AssignmentDto> UpdateAssignmentAsync(AssignmentUpdateDto assignmentUpdateDto, string AssignedBy)
         {
             var assignment = await _assignmentRepository.Entities.Include(x => x.AssignedTo).Include(x => x.Asset).Include(x => x.State).FirstOrDefaultAsync(a => a.Id == assignmentUpdateDto.Id);
@@ -240,22 +243,82 @@ namespace Rookie.AssetManagement.Business.Services
             return assignmentUpdatedDto;
         }
 
-        public async Task<bool> DisableAssignmentAsync(int id)
+        public async Task<MyAssignmentDto> AcceptAssignmentAsync(string username, int id)
         {
-            var assignment = await _assignmentRepository.Entities.Include(a => a.State).SingleOrDefaultAsync(a => a.Id.Equals(id));
-            if (assignment  == null)
+            var assignment = await _assignmentRepository.Entities
+                .Include(x => x.AssignedTo)
+                .Include(x => x.State)
+                .Include(x => x.Asset)
+                .ThenInclude(x => x.Category)
+                .FirstOrDefaultAsync(a => a.Id == id);
+            if (assignment == null)
             {
                 throw new NotFoundException("Assignment Not Found!");
             }
-            if (assignment .State.Id == (int)AssignmentStateEnum.Accepted)
+            if (assignment.AssignedTo.UserName != username)
+            {
+                throw new NotFoundException("It not your assignment!");
+            }
+            if (assignment.State.Id == (int)AssignmentStateEnum.Accepted)
+            {
+                throw new NotFoundException("Assignment already Accepted!");
+            }
+
+            var acceptState = await _stateRepository.GetById((int)AssignmentStateEnum.Accepted);
+
+            assignment.State = acceptState;
+
+            await _assignmentRepository.Update(assignment);
+
+            return _mapper.Map<MyAssignmentDto>(assignment);
+        }
+
+        public async Task<bool> DisableAssignmentAsync(int id)
+        {
+            var assignment = await _assignmentRepository.Entities.Include(a => a.State).SingleOrDefaultAsync(a => a.Id.Equals(id));
+            if (assignment == null)
+            {
+                throw new NotFoundException("Assignment Not Found!");
+            }
+            if (assignment.State.Id == (int)AssignmentStateEnum.Accepted)
             {
                 throw new NotFoundException("Assignment is accepted can not be delete");
             }
-            
 
-            await _assignmentRepository.Delete(assignment );
+
+            await _assignmentRepository.Delete(assignment);
 
             return await Task.FromResult(true);
+        }
+
+        public async Task<PagedResponseModel<MyAssignmentDto>> GetAssignmentByUserNameAsync(AssignmentQueryCriteriaDto assignmentQueryCriteria, CancellationToken cancellationToken, string userName)
+        {
+            var assignmentQuery = AssignmentFilter(
+             _assignmentRepository.Entities
+             .Include(a => a.State)
+             .Include(b => b.AssignedBy)
+             .Include(b => b.AssignedTo)
+             .Include(b => b.Asset)
+             .ThenInclude(a => a.Category)
+             .Where(b => b.AssignedTo.UserName == userName)
+             .AsQueryable(),
+             assignmentQueryCriteria);
+
+            var assignment = await assignmentQuery
+               .AsNoTracking()
+               .PaginateAsync<Assignment>(
+                   assignmentQueryCriteria.Page,
+                   assignmentQueryCriteria.Limit,
+                   cancellationToken);
+            var assignmentDto = _mapper.Map<IEnumerable<MyAssignmentDto>>(assignment.Items);
+
+            return new PagedResponseModel<MyAssignmentDto>
+            {
+                CurrentPage = assignment.CurrentPage,
+                TotalPages = assignment.TotalPages,
+                TotalItems = assignment.TotalItems,
+                Items = assignmentDto
+            };
         }
     }
 }

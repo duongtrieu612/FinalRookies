@@ -1,28 +1,21 @@
 import React, { useState } from "react";
-import { ArrowCounterclockwise, PencilFill, XCircle } from "react-bootstrap-icons";
-import { useNavigate } from "react-router";
+import { ArrowCounterclockwise, CheckLg, PencilFill, XCircle, XLg } from "react-bootstrap-icons";
 import ButtonIcon from "src/components/ButtonIcon";
-import { NotificationManager } from 'react-notifications';
 
 import Table, { SortType } from "src/components/Table";
 import IColumnOption from "src/interfaces/IColumnOption";
 import IPagedModel from "src/interfaces/IPagedModel";
-import formatDateTime, { convertDDMMYYYY } from "src/utils/formatDateTime";
-import Info from "../Info";
-//import { disableUser } from "../reducer";
-
-import { EDIT_ASSIGNMENT_ID } from "src/constants/pages";
+import { convertDDMMYYYY } from "src/utils/formatDateTime";
 import ConfirmModal from "src/components/ConfirmModal";
 import { useAppDispatch } from "src/hooks/redux";
 import IAssignment from "src/interfaces/Assignment/IAssignment";
+import Info from "./Info";
 
 
 const columns: IColumnOption[] = [
-    { columnName: "No.", columnValue: "id" },
     { columnName: "Asset Code ", columnValue: "assetCode" },
     { columnName: "Asset Name ", columnValue: "assetName" },
-    { columnName: "Assigned to ", columnValue: "assignedTo" },
-    { columnName: "Assigned by ", columnValue: "assignedBy" },
+    { columnName: "Category", columnValue: "category" },
     { columnName: "Assigned Date ", columnValue: "assignedDate" },
     { columnName: "State ", columnValue: "state" },
 ];
@@ -32,29 +25,27 @@ type Props = {
     result: IAssignment | null;
     handlePage: (page: number) => void;
     handleSort: (colValue: string) => void;
-    handleDisable: Function;
     sortState: SortType;
-    fetchData: Function;
+    handleAccept: Function
 };
 
-const AssignmentTable: React.FC<Props> = ({
+const MyAssignmentTable: React.FC<Props> = ({
     assignments,
     result,
     handlePage,
     handleSort,
     sortState,
-    fetchData,
-    handleDisable,
+    handleAccept = () => { }
 }) => {
     const dispatch = useAppDispatch();
     const [showDetail, setShowDetail] = useState(false);
     const [assignmentDetail, setAssignmentDetail] = useState(null as IAssignment | null);
-    const [disableState, setDisable] = useState({
+    const [confirmState, setConfirmState] = useState({
         isOpen: false,
-        id: 0,
         title: '',
         message: '',
         isDisable: true,
+        callback: () => { }
     });
 
     const handleShowInfo = (id: number) => {
@@ -65,44 +56,8 @@ const AssignmentTable: React.FC<Props> = ({
         }
     };
 
-    const handleShowDisable = async (id: number) => {
-        setDisable({
-            id,
-            isOpen: true,
-            title: 'Are you sure?',
-            message: 'Do you want to delete this assignment?',
-            isDisable: true,
-        });
-    };
-
-    const handleCloseDisable = () => {
-        setDisable({
-            isOpen: false,
-            id: 0,
-            title: '',
-            message: '',
-            isDisable: true,
-        });
-    };
-
-    const onDisable = () => {
-        handleDisable(disableState.id)
-        setDisable({
-            isOpen: false,
-            id: 0,
-            title: '',
-            message: '',
-            isDisable: true,
-        });
-    }
-
     const handleCloseDetail = () => {
         setShowDetail(false);
-    };
-
-    const navigate = useNavigate();
-    const handleEdit = (id: number) => {
-        navigate(EDIT_ASSIGNMENT_ID(id));
     };
 
     let rows
@@ -116,6 +71,7 @@ const AssignmentTable: React.FC<Props> = ({
     } else if (assignments) {
         rows = [...assignments.items]
     }
+
     return (
         <>
             <Table
@@ -130,24 +86,28 @@ const AssignmentTable: React.FC<Props> = ({
             >
                 {rows?.map((data, index) => (
                     <tr key={index} className="" onClick={() => handleShowInfo(data.id)}>
-                        <td>{result ? index + 1 : data.no}</td>
                         <td>{data.assetCode}</td>
                         <td>{data.assetName}</td>
-                        <td>{data.assignedTo}</td>
-                        <td>{data.assignedBy}</td>
+                        <td>{data.category}</td>
                         <td>{convertDDMMYYYY(data.assignedDate)}</td>
                         <td>{data.state}</td>
                         <td className="d-flex">
-                            <ButtonIcon disable={data.state == "Accepted"} onClick={() => handleEdit(data.id)}>
-                                <PencilFill className="text-black" />
+                            <ButtonIcon disable={data.state == "Accepted"} onClick={() => {
+                                setConfirmState({
+                                    isOpen: true,
+                                    title: 'Are you sure?',
+                                    message: 'Do you want to accept this assignment?',
+                                    isDisable: true,
+                                    callback: () => { handleAccept(data.id) }
+                                });
+                            }}>
+                                <CheckLg className="text-danger" />
                             </ButtonIcon>
-                            <ButtonIcon disable={data.state == "Accepted"} onClick={() => handleShowDisable(data.id)}>
-                                <XCircle className="text-danger mx-2" />
+                            <ButtonIcon disable={data.state == "Accepted"}>
+                                <XLg className="text-danger mx-2" />
                             </ButtonIcon>
-                            <ButtonIcon >
-                                {(data.state == "Accepted") ?
-                                    <ArrowCounterclockwise className="text-primary " /> :
-                                    <ArrowCounterclockwise fill="" className="text-primary " />}
+                            <ButtonIcon disable={data.state == "Waiting for acceptance"}>
+                                <ArrowCounterclockwise className="text-primary " />
                             </ButtonIcon>
                         </td>
                     </tr>
@@ -157,30 +117,46 @@ const AssignmentTable: React.FC<Props> = ({
                 <Info assignment={assignmentDetail} handleClose={handleCloseDetail} />
             )}
             <ConfirmModal
-                title={disableState.title}
-                isShow={disableState.isOpen}
-                onHide={handleCloseDisable}
+                title={confirmState.title}
+                isShow={confirmState.isOpen}
             >
                 <div>
 
                     <div className="text-start">
-                        {disableState.message}
+                        {confirmState.message}
                     </div>
                     {
-                        disableState.isDisable && (
+                        confirmState.isDisable && (
                             <div className="text-start mt-3">
                                 <button
                                     className="btn btn-danger mr-3"
                                     type="button"
-                                    onClick={onDisable}
+                                    onClick={() => { 
+                                        setConfirmState({
+                                            isOpen: false,
+                                            title: '',
+                                            message: '',
+                                            isDisable: true,
+                                            callback: () => { }
+                                        })
+                                        confirmState.callback() 
+                                    }}
                                 >
-                                    Delete
+                                    Accept
                                 </button>
 
                                 <button
                                     className="btn btn-outline-secondary"
-                                    onClick={handleCloseDisable}
                                     type="button"
+                                    onClick={() => {
+                                        setConfirmState({
+                                            isOpen: false,
+                                            title: '',
+                                            message: '',
+                                            isDisable: true,
+                                            callback: () => { }
+                                        })
+                                    }}
                                 >
                                     Cancel
                                 </button>
@@ -193,4 +169,4 @@ const AssignmentTable: React.FC<Props> = ({
     );
 };
 
-export default AssignmentTable;
+export default MyAssignmentTable;

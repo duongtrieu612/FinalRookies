@@ -126,6 +126,14 @@ namespace Rookie.AssetManagement.Business
                 .ForMember(d => d.AssignedTo, t => t.MapFrom(c => c.AssignedTo.UserName))
                 .ForMember(d => d.AssignedBy, t => t.MapFrom(c => c.AssignedBy.UserName))
                 .ForMember(d => d.Specification, t => t.MapFrom(c => c.Asset.Specification));
+            CreateMap<Assignment, MyAssignmentDto>()
+                .ForMember(d => d.AssetCode, t => t.MapFrom(c => c.Asset.AssetCode))
+                .ForMember(d => d.AssetName, t => t.MapFrom(c => c.Asset.AssetName))
+                .ForMember(d => d.State, t => t.MapFrom(c => c.State.StateName))
+                .ForMember(d => d.AssignedTo, t => t.MapFrom(c => c.AssignedTo.UserName))
+                .ForMember(d => d.AssignedBy, t => t.MapFrom(c => c.AssignedBy.UserName))
+                .ForMember(d => d.Specification, t => t.MapFrom(c => c.Asset.Specification))
+                .ForMember(d => d.Category, t => t.MapFrom(c => c.Asset.Category.CategoryName));
 
             CreateMap<Assignment, AssignmentFormDto>()
                 .ForMember(d => d.User, t => t.MapFrom(c => c.AssignedTo.Id))

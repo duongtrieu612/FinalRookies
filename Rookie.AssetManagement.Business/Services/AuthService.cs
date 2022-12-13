@@ -100,6 +100,10 @@ namespace Rookie.AssetManagement.Business.Services
             {
                 throw new NotFoundException("Not Found!");
             }
+            if (user.IsNewUser == false)
+            {
+                throw new NotFoundException("Not new user");
+            }
             //Generate Token
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
 

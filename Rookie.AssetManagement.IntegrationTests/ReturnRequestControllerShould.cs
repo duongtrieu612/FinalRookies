@@ -50,7 +50,13 @@ namespace Rookie.AssetManagement.IntegrationTests
             _userRepository = new BaseRepository<User>(_dbContext);
             _returnRequestRepository = new BaseRepository<ReturnRequest>(_dbContext);
 
-            _returnRequestService = new ReturnRequestService(_stategoryRepository, _assignmentRepository, _userRepository, _returnRequestRepository, _mapper);
+            _returnRequestService = new ReturnRequestService(
+                _stategoryRepository,
+                _assignmentRepository,
+                _assetRepository,
+                _userRepository,
+                _returnRequestRepository,
+                _mapper);
             _stateService = new StateService(_stategoryRepository, _mapper);
 
             _returnRequestController = new ReturnRequestController(_stateService, _returnRequestService);
@@ -104,5 +110,23 @@ namespace Rookie.AssetManagement.IntegrationTests
 
         //    Assert.Equal(assignment.Id, returnValue.Id);
         //}
+        [Fact]
+        public async Task AddReturningRequestAsync_Success()
+        {
+            //Arrange
+            var returnRequest = ReturnRequestData.GetReturnRequestCreateDto();
+
+            // Act
+            var result = await _returnRequestController.AddReturnRequestAsync(returnRequest);
+
+            // Assert
+            result.Should().NotBeNull();
+
+            var actionResult = Assert.IsType<CreatedResult>(result.Result);
+            var returnValue = Assert.IsType<ReturnRequestDto>(actionResult.Value);
+
+            Assert.Equal(3, returnValue.Id);
+            Assert.Equal("Waiting for returning", returnValue.State);
+        }
     }
 }

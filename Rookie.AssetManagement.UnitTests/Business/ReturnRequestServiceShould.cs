@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
 using MockQueryable.Moq;
 using Moq;
 using Rookie.AssetManagement.Business;
@@ -37,7 +39,13 @@ namespace Rookie.AssetManagement.UnitTests.Business
             var config = new MapperConfiguration(cfg => cfg.AddProfile<AutoMapperProfile>());
             _mapper = config.CreateMapper();
             _cancellationToken = new CancellationToken();
-            _returnRequestService = new ReturnRequestService(_stateRepository.Object, _assignmentRepository.Object, _userRepository.Object, _returnRequestRepository.Object, _mapper);
+            _returnRequestService = new ReturnRequestService(
+                _stateRepository.Object,
+                _assignmentRepository.Object,
+                _assetRepository.Object,
+                _userRepository.Object,
+                _returnRequestRepository.Object,
+                _mapper);
         }
 
         [Fact]
@@ -50,6 +58,12 @@ namespace Rookie.AssetManagement.UnitTests.Business
             var result = await _returnRequestService.GetByPageAsync(ReturnRequestTestData.ReturnRequestQueryCriteriaDto, _cancellationToken);
             //Assert   
             Assert.Equal(2, result.TotalItems);
+        }
+        [Fact]
+        public async Task AddReturningRequestAsyncShouldThrowExceptionAsync()
+        {
+            Func<Task> act = async () => await _returnRequestService.AddReturnRequestAsync(null, null);
+            await act.Should().ThrowAsync<ArgumentNullException>();
         }
     }
 }

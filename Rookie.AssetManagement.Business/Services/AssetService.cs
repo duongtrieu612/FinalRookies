@@ -20,14 +20,16 @@ namespace Rookie.AssetManagement.Business.Services
     public class AssetService : IAssetService
     {
         private readonly IBaseRepository<Asset> _assetRepository;
+        private readonly IBaseRepository<Assignment> _assignmentRepository;
         private readonly IBaseRepository<Category> _categoryRepository;
         private readonly IBaseRepository<State> _stateRepository;
         private readonly IMapper _mapper;
 
-        public AssetService(IBaseRepository<Asset> assetRepository, IBaseRepository<Category> categoryRepository,
+        public AssetService(IBaseRepository<Asset> assetRepository, IBaseRepository<Assignment> assignmentRepository, IBaseRepository<Category> categoryRepository,
             IBaseRepository<State> stateRepository, IMapper mapper)
         {
             _assetRepository = assetRepository;
+            _assignmentRepository = assignmentRepository;
             _categoryRepository = categoryRepository;
             _stateRepository = stateRepository;
             _mapper = mapper;
@@ -38,6 +40,17 @@ namespace Rookie.AssetManagement.Business.Services
                 .Where(a => a.Id == id && a.Location == location)
                 .ProjectTo<AssetFormDto>(_mapper.ConfigurationProvider)
                 .FirstAsync();
+
+            var isValidAsssignment = await _assignmentRepository.Entities
+                .AnyAsync(a =>
+                    a.Asset.Id == assetForm.Id &&
+                    a.Asset.Location == location &&
+                    a.State.Id == (int)AssignmentStateEnum.WaitingForAcceptance);
+            if (!isValidAsssignment || assetForm.State == (int)AssetStateEnum.Assigned)
+            {
+                assetForm.IsEditable = false;
+            }
+
             return assetForm;
         }
         public async Task<IEnumerable<AssetDto>> GetAllAsync()
@@ -64,14 +77,27 @@ namespace Rookie.AssetManagement.Business.Services
                    assetQueryCriteria.Limit,
                    cancellationToken);
 
-            var assetDto = _mapper.Map<IEnumerable<AssetDto>>(asset.Items);
+            var assetDtos = _mapper.Map<IEnumerable<AssetDto>>(asset.Items);
+
+            foreach (var assetDto in assetDtos)
+            {
+                var isValidAsssignment = await _assignmentRepository.Entities
+                    .AnyAsync(a =>
+                        a.Asset.Id == assetDto.Id &&
+                        a.Asset.Location == location &&
+                        a.State.Id == (int)AssignmentStateEnum.WaitingForAcceptance);
+                if (!isValidAsssignment || assetDto.State == AssetStateEnum.Assigned.ToString())
+                {
+                    assetDto.IsEditable = false;
+                }
+            }
 
             return new PagedResponseModel<AssetDto>
             {
                 CurrentPage = asset.CurrentPage,
                 TotalPages = asset.TotalPages,
                 TotalItems = asset.TotalItems,
-                Items = assetDto
+                Items = assetDtos
             };
         }
         public async Task<AssetDto> AddAssetAsync(AssetCreateDto asset, string location)
@@ -168,7 +194,10 @@ namespace Rookie.AssetManagement.Business.Services
         }
         public async Task<AssetDto> UpdateAssetAsync(AssetUpdateDto assetUpdateDto, string location)
         {
-            var asset = await _assetRepository.Entities.Include(x => x.State).Include(x => x.Category).FirstOrDefaultAsync(a => a.Id == assetUpdateDto.Id && a.Location == location);
+            var asset = await _assetRepository.Entities
+                .Include(x => x.State)
+                .Include(x => x.Category)
+                .FirstOrDefaultAsync(a => a.Id == assetUpdateDto.Id && a.Location == location);
             if (asset == null)
             {
                 throw new NotFoundException("Asset Not Found!");
@@ -181,6 +210,13 @@ namespace Rookie.AssetManagement.Business.Services
             if (getState == null)
             {
                 throw new NotFoundException("State Not Found!");
+            }
+
+            var isValidAsssignment = await _assignmentRepository.Entities
+                .AnyAsync(a => a.Asset.Id == assetUpdateDto.Id && a.Asset.Location == location && a.State.Id == (int)AssignmentStateEnum.WaitingForAcceptance);
+            if (isValidAsssignment)
+            {
+                throw new NotFoundException("Can't edit assets which have assignment with state Waiting for acceptance or Assigned!");
             }
 
             _mapper.Map(assetUpdateDto, asset);
@@ -213,7 +249,7 @@ namespace Rookie.AssetManagement.Business.Services
         {
             var assetQuery = AssetSortLookUp(
             _assetRepository.Entities.Include(a => a.Category)
-            .Where(x => !x.IsDeleted).Where(x => x.State.Id == 2).AsQueryable(),
+                .Where(x => !x.IsDeleted).Where(x => x.State.Id == (int)AssetStateEnum.Available).AsQueryable(),
             assetQueryCriteria);
 
             var asset = await assetQuery

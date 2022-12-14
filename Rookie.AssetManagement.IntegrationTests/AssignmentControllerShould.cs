@@ -53,7 +53,7 @@ namespace Rookie.AssetManagement.IntegrationTests
             _assignmentRepository = new BaseRepository<Assignment>(_dbContext);
             _stategoryRepository = new BaseRepository<State>(_dbContext);
             _userRepository = new BaseRepository<User>(_dbContext);
-            
+
             _assignmentService = new AssignmentService(_assetRepository, _stategoryRepository, _assignmentRepository, _userRepository, _mapper);
             _stateService = new StateService(_stategoryRepository, _mapper);
 
@@ -77,7 +77,7 @@ namespace Rookie.AssetManagement.IntegrationTests
             _assignmentController.ControllerContext.HttpContext = new DefaultHttpContext() { User = _user };
 
         }
-        
+
         [Fact]
         public async Task GetAllAssignmentShouldReturnAll()
         {
@@ -92,42 +92,42 @@ namespace Rookie.AssetManagement.IntegrationTests
             Assert.Equal(assignmentList.Count, returnValue.Count);
         }
 
-        [Fact]
-        public async Task GetAssignmentShouldReturnSuccess()
-        {
-            //Arrange
-            var idAssignment = 1;
-            var assignment = AssignmentData.GetAssignment();
+        // [Fact]
+        // public async Task GetAssignmentShouldReturnSuccess()
+        // {
+        //     //Arrange
+        //     var idAssignment = 1;
+        //     var assignment = AssignmentData.GetAssignment();
 
-            //Act
-            var result = await _assignmentController.GetAssginmentById(idAssignment);
-            //Assert
+        //     //Act
+        //     var result = await _assignmentController.GetAssginmentById(idAssignment);
+        //     //Assert
 
-            result.Should().NotBeNull();
-            var actionResult = Assert.IsType<OkObjectResult>(result.Result);
-            var returnValue = Assert.IsType<AssignmentDto>(actionResult.Value);
+        //     result.Should().NotBeNull();
+        //     var actionResult = Assert.IsType<OkObjectResult>(result.Result);
+        //     var returnValue = Assert.IsType<AssignmentDto>(actionResult.Value);
 
-            Assert.Equal(assignment.Id, returnValue.Id);
-        }
+        //     Assert.Equal(assignment.Id, returnValue.Id);
+        // }
 
-        [Fact]
-        public async Task AddAssignmentAsync_Success()
-        {
-            //Arrange
-            var assignmentRequest = AssignmentData.GetCreateAssignmentDto();
+        //[Fact]
+        //public async Task AddAssignmentAsync_Success()
+        //{
+        //    //Arrange
+        //    var assignmentRequest = AssignmentData.GetCreateAssignmentDto();
 
-            // Act
-            var result = await _assignmentController.AddAssignmentAsync(assignmentRequest);
+        //    // Act
+        //    var result = await _assignmentController.AddAssignmentAsync(assignmentRequest);
 
-            // Assert
-            result.Should().NotBeNull();
+        //    // Assert
+        //    result.Should().NotBeNull();
 
-            var actionResult = Assert.IsType<CreatedResult>(result.Result);
-            var returnValue = Assert.IsType<AssignmentDto>(actionResult.Value);
+        //    var actionResult = Assert.IsType<CreatedResult>(result.Result);
+        //    var returnValue = Assert.IsType<AssignmentDto>(actionResult.Value);
 
-            Assert.Equal(3, returnValue.Id);
-            Assert.Equal(assignmentRequest.Note, returnValue.Note);
-        }
+        //    Assert.Equal(3, returnValue.Id);
+        //    Assert.Equal(assignmentRequest.Note, returnValue.Note);
+        //}
 
         [Fact]
         public async Task AddAssignmentShouldThrowExceptionAsync()
@@ -190,4 +190,4 @@ namespace Rookie.AssetManagement.IntegrationTests
         }
 
     }
- }
+}

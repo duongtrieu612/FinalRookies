@@ -1,7 +1,9 @@
 using Rookie.AssetManagement.Contracts.Dtos.AssetDtos;
 using Rookie.AssetManagement.Contracts.Dtos.AssignmentDtos;
 using Rookie.AssetManagement.Contracts.Dtos.CategoryDtos;
+using Rookie.AssetManagement.Contracts.Dtos.EnumDtos;
 using Rookie.AssetManagement.Contracts.Dtos.StateDtos;
+using Rookie.AssetManagement.Contracts.Dtos.UserDtos;
 using Rookie.AssetManagement.DataAccessor.Data;
 using Rookie.AssetManagement.DataAccessor.Entities;
 using Rookie.AssetManagement.DataAccessor.Enum;
@@ -13,22 +15,24 @@ using System.Threading.Tasks;
 
 namespace Rookie.AssetManagement.IntegrationTests.TestData
 {
-    public class AssignmentData{
-        public static List<Assignment> GetSeedAssignmentsData(){
+    public class AssignmentData
+    {
+        public static List<Assignment> GetSeedAssignmentsData()
+        {
             return new List<Assignment>(){
                 new Assignment()
                 {
                     Asset = new Asset(){
-                        
+
                         AssetCode = "MO000001",
                         AssetName = "Personal Computer xyz",
                     },
                      AssignedTo= new User(){
-                        
+
                         UserName = "damthuy",
                     },
                     AssignedBy = new User(){
-                        
+
                         UserName = "admin",
                     },
                     AssignedDate = new DateTime(),
@@ -41,16 +45,16 @@ namespace Rookie.AssetManagement.IntegrationTests.TestData
                 },
                 new Assignment(){
                     Asset = new Asset (){
-                        
+
                         AssetCode = "MO000002",
                         AssetName = "Personal Computer xyz2",
-                    }, 
+                    },
                     AssignedTo= new User(){
-                        
+
                         UserName = "binhnv",
                     },
                     AssignedBy = new User(){
-                        
+
                         UserName = "admin",
                     },
                     AssignedDate = new DateTime(),
@@ -61,7 +65,7 @@ namespace Rookie.AssetManagement.IntegrationTests.TestData
                     IsDeleted = false,
                     Note = "abc"
                 }
-                
+
             };
         }
 
@@ -76,7 +80,7 @@ namespace Rookie.AssetManagement.IntegrationTests.TestData
 
         public static List<State> GetSeedStatesData()
         {
-             return new List<State>()
+            return new List<State>()
             {
                 new State()
                 {
@@ -86,29 +90,31 @@ namespace Rookie.AssetManagement.IntegrationTests.TestData
                 {
                 StateName = "Waiting for Acceptance",
                 }
-        };}
+        };
+        }
 
-    public static List<User> GetSeedUsersData()
+        public static List<User> GetSeedUsersData()
         {
-             return new List<User>()
+            return new List<User>()
             {
                 new User()
-                {       
-                UserName="admin"               
+                {
+                UserName="admin"
                 },
                 new User()
-                {              
-                UserName="damthuy"       
+                {
+                UserName="damthuy"
                 },
                 new User()
-                {               
-                UserName="binhnv"       
+                {
+                UserName="binhnv"
                 }
-        };}
+        };
+        }
 
-    public static List<Asset> GetSeedAssetsData()
+        public static List<Asset> GetSeedAssetsData()
         {
-             return new List<Asset>()
+            return new List<Asset>()
             {
                 new Asset()
                 {
@@ -125,8 +131,10 @@ namespace Rookie.AssetManagement.IntegrationTests.TestData
                     AssetCode = "MO000003",
                     AssetName = "Personal Computer 3",
                 }
-        };}
-        public static List<AssignmentDto> GetAllAssignments(){
+        };
+        }
+        public static List<AssignmentDto> GetAllAssignments()
+        {
             return new List<AssignmentDto>()
             {
                 new AssignmentDto(){
@@ -179,19 +187,20 @@ namespace Rookie.AssetManagement.IntegrationTests.TestData
             };
         }
 
-        public static AssignmentCreateDto GetCreateAssignmentDto(){
+        public static AssignmentCreateDto GetCreateAssignmentDto()
+        {
             return new AssignmentCreateDto()
             {
-                    User = "2",
-                    Asset = "3",
-                    AssignedDate = new DateTime(),
-                    Note = "May tinh CR7",
+                User = "2",
+                Asset = "2",
+                AssignedDate = new DateTime(),
+                Note = "May tinh CR7",
             };
         }
 
         public static void InitAssignmentsData(ApplicationDbContext dbContext)
         {
-            var assignments = GetSeedAssignmentsData();          
+            var assignments = GetSeedAssignmentsData();
             var state = dbContext.States.FirstOrDefault(s => s.Id == 1);
             foreach (var assignment in assignments)
             {

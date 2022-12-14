@@ -27,7 +27,7 @@ namespace Rookie.AssetManagement.Controllers
             _stateService = stateService;
             _returnRequestService = returnRequestService;
         }
-        
+
         [HttpGet]
         public async Task<ActionResult<ReturnRequestDto>> GetAllReturnRequest()
         {
@@ -54,12 +54,29 @@ namespace Rookie.AssetManagement.Controllers
             return Ok(await _stateService.GetReturningStateAsync());
         }
 
+        [HttpPatch("complete/{id}")]
+        public async Task<ActionResult<ReturnRequestDto>> CompleteReturnRequest([FromRoute] int id)
+        {
+            var userName = User.Claims.FirstOrDefault(x => x.Type.Equals("UserName", StringComparison.OrdinalIgnoreCase))?.Value;
+            var returnRequest = await _returnRequestService.CompleteReturnRequest(userName, id);
+            return Ok(returnRequest);
+        }
+
         [HttpPost]
-        public async Task<ActionResult<ReturnRequestDto>> AddAssignmentAsync([FromBody] ReturnRequestCreateDto returnRequestCreate)
+        public async Task<ActionResult<ReturnRequestDto>> AddReturnRequestAsync([FromBody] ReturnRequestCreateDto returnRequestCreate)
         {
             var userName = User.Claims.FirstOrDefault(x => x.Type.Equals("UserName", StringComparison.OrdinalIgnoreCase))?.Value;
             var assigment = await _returnRequestService.AddReturnRequestAsync(returnRequestCreate, userName);
             return Created(Endpoints.User, assigment);
+        }
+
+        [HttpDelete]
+        [Route("cancel/{id}")]
+        public async Task<ActionResult> CancelReturnRequestAsync([FromRoute] int id)
+        {
+            var cancelResult = await _returnRequestService.CancelReturnRequestAsync(id);
+
+            return Ok(cancelResult);
         }
     }
 

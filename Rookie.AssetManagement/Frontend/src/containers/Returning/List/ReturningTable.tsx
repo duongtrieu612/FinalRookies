@@ -111,7 +111,7 @@ const ReturningTable: React.FC<Props> = ({
                         <td>{data.requestedBy}</td>
                         <td>{convertDDMMYYYY(data.assignedDate)}</td>
                         <td>{data.acceptedBy}</td>
-                        <td>{convertDDMMYYYY(data.returnedDate)}</td>
+                        <td>{data.acceptedBy ? convertDDMMYYYY(data.returnedDate) : ""}</td>
                         <td>{data.state}</td>
                         <td className="d-flex cvg-custom">
                             <ButtonIcon disable={data.state == "Completed"}
@@ -151,6 +151,7 @@ const ReturningTable: React.FC<Props> = ({
                 ))}
             </Table>
             <ConfirmModal
+                dialogClassName="return-modal"
                 title={confirmState.title}
                 isShow={confirmState.isOpen}
                 onHide={() => {
